@@ -61,12 +61,18 @@ const Navbar = () => {
                 onChange={(e) => handleSearchTerm(e)}
                 onKeyDown={handleKeyDown}
               />
-              <Link
-                to={`search/${searchTerm}`}
-                className="text-white search-btn flex align-center justify-center"
-              >
-                <i className="fa-solid fa-magnifying-glass"></i>
-              </Link>
+              {searchTerm ? (
+                <Link
+                  to={`search/${searchTerm}`}
+                  className="text-white search-btn flex align-center justify-center"
+                >
+                  <i className="fa-solid fa-magnifying-glass"></i>
+                </Link>
+              ) : (
+                <span className="text-white search-btn flex align-center justify-center">
+                  <i className="fa-solid fa-magnifying-glass"></i>
+                </span>
+              )}
             </div>
           </div>
 
