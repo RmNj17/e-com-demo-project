@@ -71,7 +71,7 @@ const Navbar = () => {
           </div>
 
           <ul className="navbar-nav flex align-center fs-12 fw-4 font-manrope">
-            {categories.slice(0, 5).map((category, idx) => (
+            {categories.slice(0, 12).map((category, idx) => (
               <li className="nav-item no-wrap" key={idx}>
                 <Link
                   to={`category/${category}`}
