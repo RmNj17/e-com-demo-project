@@ -6,7 +6,7 @@ import { formatPrice } from '../../utils/helpers';
 const CartModal = ({carts}) => {
   return (
     <div className='cart-modal'>
-      <h5 className='cart-modal-title fw-5 fs-15 font-manrope text-center'>Recenlty Added Products</h5>
+      <h5 className='cart-modal-title fw-5 fs-15 font-manrope text-center'>Recently Added Products</h5>
       {
         (carts?.length > 0) ? (
           <div className='cart-modal-list grid'>

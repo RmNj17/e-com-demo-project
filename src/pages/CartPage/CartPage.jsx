@@ -1,21 +1,30 @@
 import "./CartPage.scss";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { shopping_cart } from "../../utils/images";
 import { Link } from "react-router-dom";
 import { formatPrice } from "../../utils/helpers";
 import {
-  getAllCarts,
   removeFromCart,
   toggleCartQty,
   clearCart,
 } from "../../store/cartSlice";
+import { useState } from "react";
 
 const CartPage = () => {
   const dispatch = useDispatch();
-  const carts = useSelector(getAllCarts);
-  const { itemsCount, totalAmount } = useSelector((state) => state.cart);
+  const [cartUpdated, setCartUpdated] = useState(false);
+  const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
 
-  if (carts.length === 0) {
+  const itemsCount = cartItems.length;
+  const totalAmount = cartItems.reduce(
+    (total, item) => total + item.discountedPrice * item.quantity,
+    0
+  );
+  const handleClearCart = () => {
+    dispatch(clearCart());
+    setCartUpdated(!cartUpdated);
+  };
+  if (cartItems.length === 0) {
     return (
       <div className="container my-5">
         <div className="empty-cart flex justify-center align-center flex-column font-manrope">
@@ -59,7 +68,7 @@ const CartPage = () => {
           </div>
 
           <div className="cart-cbody bg-white">
-            {carts.map((cart, idx) => {
+            {cartItems.map((cart, idx) => {
               return (
                 <div className="cart-ctr py-4" key={cart?.id}>
                   <div className="cart-ctd">
@@ -78,9 +87,12 @@ const CartPage = () => {
                       <button
                         type="button"
                         className="qty-decrease flex align-center justify-center"
-                        onClick={() =>
-                          dispatch(toggleCartQty({ id: cart?.id, type: "DEC" }))
-                        }
+                        onClick={() => {
+                          dispatch(
+                            toggleCartQty({ id: cart?.id, type: "DEC" })
+                          );
+                          setCartUpdated(!cartUpdated);
+                        }}
                       >
                         <i className="fas fa-minus"></i>
                       </button>
@@ -92,9 +104,12 @@ const CartPage = () => {
                       <button
                         type="button"
                         className="qty-increase flex align-center justify-center"
-                        onClick={() =>
-                          dispatch(toggleCartQty({ id: cart?.id, type: "INC" }))
-                        }
+                        onClick={() => {
+                          dispatch(
+                            toggleCartQty({ id: cart?.id, type: "INC" })
+                          );
+                          setCartUpdated(!cartUpdated);
+                        }}
                       >
                         <i className="fas fa-plus"></i>
                       </button>
@@ -111,7 +126,10 @@ const CartPage = () => {
                     <button
                       type="button"
                       className="delete-btn text-dark"
-                      onClick={() => dispatch(removeFromCart(cart?.id))}
+                      onClick={() => {
+                        dispatch(removeFromCart(cart?.id));
+                        setCartUpdated(!cartUpdated);
+                      }}
                     >
                       <i className="fa-solid fa-trash"></i>
                     </button>
@@ -126,7 +144,7 @@ const CartPage = () => {
               <button
                 type="button"
                 className="clear-cart-btn text-danger fs-15 text-uppercase fw-4"
-                onClick={() => dispatch(clearCart())}
+                onClick={handleClearCart}
               >
                 <i className="fas fa-trash"></i>
                 <span className="mx-1">Clear Cart</span>

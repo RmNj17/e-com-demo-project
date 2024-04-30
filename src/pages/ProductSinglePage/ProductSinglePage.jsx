@@ -1,38 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./ProductSinglePage.scss";
-import { useParams } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  fetchAsyncProductSingle,
-  getProductSingle,
-  getSingleProductStatus,
-} from "../../store/productSlice";
-import { STATUS } from "../../utils/status";
-import Loader from "../../components/Loader/Loader";
+import { useDispatch } from "react-redux";
 import { formatPrice } from "../../utils/helpers";
 import { addToCart } from "../../store/cartSlice";
 import PageHelmet from "../../components/PageHelmet/PageHelmet";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import productData from "../../utils/products.json";
+import { useParams } from "react-router-dom";
 
 const ProductSinglePage = () => {
-  const { id } = useParams();
   const dispatch = useDispatch();
-  const product = useSelector(getProductSingle);
-  const productSingleStatus = useSelector(getSingleProductStatus);
+  const { id } = useParams();
+  const products = productData?.products;
+  const product = products.find((product) => product.id == id);
   const [quantity, setQuantity] = useState(1);
-
-  // getting single product
-  useEffect(() => {
-    dispatch(fetchAsyncProductSingle(id));
-  }, []);
 
   let discountedPrice =
     product?.price - product?.price * (product?.discountPercentage / 100);
-  if (productSingleStatus === STATUS.LOADING) {
-    return <Loader />;
-  }
 
   const increaseQty = () => {
     setQuantity((prevQty) => {

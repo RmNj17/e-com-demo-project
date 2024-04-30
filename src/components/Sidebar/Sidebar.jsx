@@ -1,21 +1,21 @@
-import { useEffect } from "react";
 import "./Sidebar.scss";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getSidebarStatus, setSidebarOff } from "../../store/sidebarSlice";
-import {
-  fetchAsyncCategories,
-  getAllCategories,
-} from "../../store/categorySlice";
+import productData from "../../utils/products.json";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
   const isSidebarOn = useSelector(getSidebarStatus);
-  const categories = useSelector(getAllCategories);
+  const products = productData?.products;
+  const categories = [...new Set(products?.map((product) => product.category))];
+  const categoryProducts = {};
 
-  useEffect(() => {
-    dispatch(fetchAsyncCategories());
-  }, [dispatch]);
+  categories.forEach((category) => {
+    categoryProducts[category] = products.filter(
+      (product) => product.category === category
+    );
+  });
 
   return (
     <aside className={`sidebar ${isSidebarOn ? "hide-sidebar" : ""}`}>

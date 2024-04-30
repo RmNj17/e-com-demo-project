@@ -1,35 +1,24 @@
-import { useEffect, useState } from "react";
 import "./SearchPage.scss";
-import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { STATUS } from "../../utils/status";
-import Loader from "../../components/Loader/Loader";
 import ProductList from "../../components/ProductList/ProductList";
-import {
-  fetchAsyncSearchProduct,
-  getSearchProducts,
-  getSearchProductsStatus,
-  clearSearch,
-} from "../../store/searchSlice";
+import productData from "../../utils/products.json";
 
 const SearchPage = () => {
-  const dispatch = useDispatch();
   const { searchTerm } = useParams();
-  const searchProducts = useSelector(getSearchProducts);
-  const searchProductsStatus = useSelector(getSearchProductsStatus);
-  const [loading, setLoading] = useState(true);
+  const products = productData?.products;
+  const searchProducts = products.filter((product) => {
+    const lowercaseQuery = searchTerm.toLowerCase();
 
-  useEffect(() => {
-    setLoading(true);
-    dispatch(clearSearch());
-    dispatch(fetchAsyncSearchProduct(searchTerm)).then(() => {
-      setLoading(false);
-    });
-  }, [dispatch, searchTerm]);
-
-  if (loading) {
-    return <Loader />;
-  }
+    for (const key in product) {
+      if (
+        typeof product[key] === "string" &&
+        product[key].toLowerCase().includes(lowercaseQuery)
+      ) {
+        return true;
+      }
+    }
+    return false;
+  });
 
   if (searchProducts.length === 0) {
     return (
@@ -55,11 +44,7 @@ const SearchPage = () => {
               <h3>Search results:</h3>
             </div>
             <br />
-            {searchProductsStatus === STATUS.LOADING ? (
-              <Loader />
-            ) : (
-              <ProductList products={searchProducts} />
-            )}
+            <ProductList products={searchProducts} />
           </div>
         </div>
       </div>

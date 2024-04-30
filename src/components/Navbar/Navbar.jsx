@@ -1,20 +1,17 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./Navbar.scss";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setSidebarOn } from "../../store/sidebarSlice";
-import { getAllCategories } from "../../store/categorySlice";
-import {
-  getAllCarts,
-  getCartItemsCount,
-  getCartTotal,
-} from "../../store/cartSlice";
+import { getAllCarts, getCartItemsCount } from "../../store/cartSlice";
 import CartModal from "../CartModal/CartModal";
+import productData from "../../utils/products.json";
 
 const Navbar = () => {
   const dispatch = useDispatch();
-  const categories = useSelector(getAllCategories);
+  const products = productData?.products;
+  const categories = [...new Set(products?.map((product) => product.category))];
+
   const carts = useSelector(getAllCarts);
   const itemsCount = useSelector(getCartItemsCount);
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,10 +29,6 @@ const Navbar = () => {
   const search = () => {
     window.location.href = `/search/${searchTerm}`;
   };
-
-  useEffect(() => {
-    dispatch(getCartTotal());
-  }, [carts]);
 
   return (
     <nav className="navbar">
@@ -78,7 +71,7 @@ const Navbar = () => {
           </div>
 
           <ul className="navbar-nav flex align-center fs-12 fw-4 font-manrope">
-            {categories.slice(0, 12).map((category, idx) => (
+            {categories.slice(0, 5).map((category, idx) => (
               <li className="nav-item no-wrap" key={idx}>
                 <Link
                   to={`category/${category}`}

@@ -1,31 +1,11 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from "react";
 import "./HomePage.scss";
 import HeaderSlider from "../../components/Slider/HeaderSlider";
-import { useSelector, useDispatch } from "react-redux";
-import { getAllCategories } from "../../store/categorySlice";
 import ProductList from "../../components/ProductList/ProductList";
-import {
-  fetchAsyncProducts,
-  getAllProducts,
-  getAllProductsStatus,
-} from "../../store/productSlice";
-import Loader from "../../components/Loader/Loader";
-import { STATUS } from "../../utils/status";
 import PageHelmet from "../../components/PageHelmet/PageHelmet";
+import productData from "../../utils/products.json";
 
 const HomePage = () => {
-  const dispatch = useDispatch();
-  const categories = useSelector(getAllCategories);
-
-  useEffect(() => {
-    dispatch(fetchAsyncProducts(150));
-  }, []);
-
-  const products = useSelector(getAllProducts);
-  const productStatus = useSelector(getAllProductsStatus);
-
-  // randomizing the products in the list
+  const products = productData?.products;
   const tempProducts = [];
   if (products.length > 0) {
     for (let i in products) {
@@ -38,19 +18,6 @@ const HomePage = () => {
     }
   }
 
-  let catProductsOne = products.filter(
-    (product) => product.category === categories[0]
-  );
-  let catProductsTwo = products.filter(
-    (product) => product.category === categories[1]
-  );
-  let catProductsThree = products.filter(
-    (product) => product.category === categories[2]
-  );
-  let catProductsFour = products.filter(
-    (product) => product.category === categories[3]
-  );
-
   return (
     <main>
       <PageHelmet title="ShopMandu - Your Ultimate Online Shopping Destination" />
@@ -62,57 +29,9 @@ const HomePage = () => {
           <div className="categories py-5">
             <div className="categories-item">
               <div className="title-md">
-                <h3>See our products</h3>
+                <h3>See our all products</h3>
               </div>
-              {productStatus === STATUS.LOADING ? (
-                <Loader />
-              ) : (
-                <ProductList products={tempProducts} />
-              )}
-            </div>
-
-            <div className="categories-item">
-              <div className="title-md">
-                <h3>{categories[0]}</h3>
-              </div>
-              {productStatus === STATUS.LOADING ? (
-                <Loader />
-              ) : (
-                <ProductList products={catProductsOne} />
-              )}
-            </div>
-
-            <div className="categories-item">
-              <div className="title-md">
-                <h3>{categories[1]}</h3>
-              </div>
-              {productStatus === STATUS.LOADING ? (
-                <Loader />
-              ) : (
-                <ProductList products={catProductsTwo} />
-              )}
-            </div>
-
-            <div className="categories-item">
-              <div className="title-md">
-                <h3>{categories[2]}</h3>
-              </div>
-              {productStatus === STATUS.LOADING ? (
-                <Loader />
-              ) : (
-                <ProductList products={catProductsThree} />
-              )}
-            </div>
-
-            <div className="categories-item">
-              <div className="title-md">
-                <h3>{categories[3]}</h3>
-              </div>
-              {productStatus === STATUS.LOADING ? (
-                <Loader />
-              ) : (
-                <ProductList products={catProductsFour} />
-              )}
+              <ProductList products={tempProducts} />
             </div>
           </div>
         </div>

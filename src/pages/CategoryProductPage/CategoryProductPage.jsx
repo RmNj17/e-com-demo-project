@@ -1,25 +1,19 @@
-import { useEffect } from "react";
 import "./CategoryProductPage.scss";
 import ProductList from "../../components/ProductList/ProductList";
-import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import {
-  getAllProductsByCategory,
-  fetchAsyncProductsOfCategory,
-  getCategoryProductsStatus,
-} from "../../store/categorySlice";
-import Loader from "../../components/Loader/Loader";
-import { STATUS } from "../../utils/status";
+import productData from "../../utils/products.json";
 
 const CategoryProductPage = () => {
-  const dispatch = useDispatch();
   const { category } = useParams();
-  const categoryProducts = useSelector(getAllProductsByCategory);
-  const categoryProductsStatus = useSelector(getCategoryProductsStatus);
+  const products = productData?.products;
+  const categories = [...new Set(products?.map((product) => product.category))];
+  const categoryProducts = {};
 
-  useEffect(() => {
-    dispatch(fetchAsyncProductsOfCategory(category));
-  }, [dispatch, category]);
+  categories.forEach((category) => {
+    categoryProducts[category] = products.filter(
+      (product) => product.category === category
+    );
+  });
 
   return (
     <div className="cat-products py-5 bg-whitesmoke">
@@ -34,11 +28,7 @@ const CategoryProductPage = () => {
             </h3>
           </div>
 
-          {categoryProductsStatus === STATUS.LOADING ? (
-            <Loader />
-          ) : (
-            <ProductList products={categoryProducts} />
-          )}
+          <ProductList products={categoryProducts[category]} />
         </div>
       </div>
     </div>

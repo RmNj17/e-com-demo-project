@@ -110,5 +110,5 @@ export const {
   removeFromCart,
 } = cartSlice.actions;
 export const getAllCarts = (state) => state.cart.carts;
-export const getCartItemsCount = (state) => state.cart.itemsCount;
+export const getCartItemsCount = (state) => state.cart.carts.length;
 export default cartSlice.reducer;
